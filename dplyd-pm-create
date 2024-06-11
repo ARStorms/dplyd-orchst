@@ -1,0 +1,41 @@
+#!/bin/sh
+if [ "$1" == "" ]
+then
+	echo "Project ID not provided"
+	exit
+fi
+if getent passwd "$1" > /dev/null
+then
+        echo "Project exist"
+        exit
+fi
+if [ "$2" == "" ]
+then
+	echo "Project size not provided"
+	exit
+fi
+if [ "$3" == "" ]
+then
+	echo "Project 'assigned TCP incoming traffic port block' not provided"
+	exit
+fi
+useradd  "$1"
+mkdir    "/home/$1/.ssh"
+cp       "/root/.ssh/authorized_keys"       "/home/$1/.ssh/"
+chmod    -R 0700                            "/home/$1/.ssh"
+touch    "/home/$1/.prmtr"  ; chmod 0600    "/home/$1/.prmtr"
+mkdir    "/home/$1/.plate"  ; chmod 0700    "/home/$1/.plate"
+mkdir    "/home/$1/.store"  ; chmod 0700    "/home/$1/.store"
+chown    -R $1:$1 "/home/$1"; restorecon -r "/home/$1"
+mkdir    "/dplyd/$1"
+touch    "/dplyd/$1/profile"
+python3 /sbin/dplyd-pm-create.py $1 $2 $3
+if [ "$?" != 0 ]
+then
+         dplyd-pm-delete $1 -f
+         exit
+fi
+cp       "/dplyd/$1/profile"  "/home/$1/.profile"
+chmod    0600                 "/home/$1/.profile"
+chown    -R $1:$1 "/home/$1"; restorecon -r "/home/$1"
+loginctl enable-linger  "$1"

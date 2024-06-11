@@ -1,0 +1,6 @@
+#!/bin/sh
+pulse=$(podman ps | grep software)
+if [ "$pulse" == "" ]
+then
+        /sbin/dplyd-poi-launch
+fi

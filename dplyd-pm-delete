@@ -1,0 +1,14 @@
+#!/bin/sh
+if [ "$1" == "" ]
+then
+	 echo "Project ID not provided"
+	 exit
+fi
+if [ "$2" != "-f" ]
+then
+	 echo "This is a destructive command. You need to know the special keyword if I am to fulfil it"
+	 exit
+fi
+loginctl disable-linger "$1"
+userdel  -r  "$1"
+rm       -rf "/dplyd/$1"

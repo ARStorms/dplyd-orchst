@@ -1,0 +1,13 @@
+#!/bin/sh
+if [ "$1" == "" ]
+then
+	echo "Project ID not provided"
+	exit
+fi
+umount -l  "/home/$1"
+umount -f  "/home/$1"
+loginctl disable-linger "$1"
+rm     -rf "/home/$1"
+sed    -i  "/\/home\/$1/d" '/etc/fstab'
+systemctl daemon-reload
+mount  -a

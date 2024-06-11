@@ -1,0 +1,13 @@
+#!/bin/sh
+mkdir    -p    $HOME/.local/bin
+podman unshare chown -R '0:0' .prmtr
+podman unshare chown -R '0:0' .plate
+podman unshare chown -R '0:0' .store
+python3  /sbin/dplyd-poi-launch.py
+if [ "$?" != 0 ]
+then
+         exit
+fi
+chmod    0700  $HOME/.local/bin/*
+"$HOME/.local/bin/dplyd-poi-launchCode"
+echo "* * * * * /sbin/dplyd-poi-manage" | crontab; crontab -l

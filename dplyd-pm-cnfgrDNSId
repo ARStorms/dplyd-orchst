@@ -1,0 +1,7 @@
+#!/bin/sh
+python3   /sbin/dplyd-pm-cnfgrDNSId.py "$1" "$2" "$3"
+if [ "$?" != 0 ]
+then
+         exit
+fi
+dplyd-pm-prprgtPrfl "$1"
