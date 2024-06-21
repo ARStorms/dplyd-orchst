@@ -11,13 +11,13 @@ then
 fi
 if [ "$2" == "" ]
 then
-        python3 /sbin/dplyd-pm-cnfgrStore.py "$1"
+        python3 /sbin/dplyd-orchst-cnfgrStore.py "$1"
         if [ "$?" != 0 ]
         then
                 exit
         fi
 else
-        python3 /sbin/dplyd-pm-cnfgrStore.py "$1" "$2"
+        python3 /sbin/dplyd-orchst-cnfgrStore.py "$1" "$2"
         if [ "$?" != 0 ]
         then
                 exit

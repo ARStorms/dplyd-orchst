@@ -1,6 +1,6 @@
 #!/bin/sh
 systemctl stop  nginx
-python3 /sbin/dplyd-pm-intlzHttps.py "$1"
+python3 /sbin/dplyd-orchst-intlzHttps.py "$1"
 if [ "$?" != 0 ]
 then
          exit

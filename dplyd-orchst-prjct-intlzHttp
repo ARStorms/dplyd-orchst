@@ -1,5 +1,5 @@
 #!/bin/sh
-python3 /sbin/dplyd-pm-intlzHttp.py "$1"
+python3 /sbin/dplyd-orchst-intlzHttp.py "$1"
 if [ "$?" != 0 ]
 then
          exit

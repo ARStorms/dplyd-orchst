@@ -82,7 +82,7 @@ try:
         _bd19 = "{0} {1}".format (_bd19_01, _bd19_02)
         #####
         _be01 = startCode.format (_bd11, _bd12, _bd13, _bd14, _bd15, _bd16, _bd17, _bd18, _bd19)
-        _bf01 = open (".local/bin/dplyd-poi-launchCode", "w")
+        _bf01 = open (".local/bin/dplyd-orchst-launchCode", "w")
         _bf01.write  (_be01)
         print (_be01 )
 except  Exception as e:

@@ -29,10 +29,10 @@ mkdir    "/home/$1/.store"  ; chmod 0700    "/home/$1/.store"
 chown    -R $1:$1 "/home/$1"; restorecon -r "/home/$1"
 mkdir    "/dplyd/$1"
 touch    "/dplyd/$1/profile"
-python3 /sbin/dplyd-pm-create.py $1 $2 $3
+python3 /sbin/dplyd-orchst-create.py $1 $2 $3
 if [ "$?" != 0 ]
 then
-         dplyd-pm-delete $1 -f
+         dplyd-orchst-delete $1 -f
          exit
 fi
 cp       "/dplyd/$1/profile"  "/home/$1/.profile"
