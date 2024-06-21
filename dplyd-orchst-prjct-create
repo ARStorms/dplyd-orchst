@@ -16,7 +16,7 @@ then
 fi
 if [ "$3" == "" ]
 then
-	echo "Project 'assigned TCP incoming traffic port block' not provided"
+	echo "Project 'port block to assign' not specified"
 	exit
 fi
 useradd  "$1"
@@ -27,15 +27,13 @@ touch    "/home/$1/.prmtr"  ; chmod 0600    "/home/$1/.prmtr"
 mkdir    "/home/$1/.plate"  ; chmod 0700    "/home/$1/.plate"
 mkdir    "/home/$1/.store"  ; chmod 0700    "/home/$1/.store"
 chown    -R $1:$1 "/home/$1"; restorecon -r "/home/$1"
-mkdir    "/dplyd/$1"
-touch    "/dplyd/$1/profile"
-python3 /sbin/dplyd-orchst-create.py $1 $2 $3
+mkdir    "/etc/dplyd/$1"
+touch    "/etc/dplyd/$1/profile"
+python3  /sbin/dplyd-orchst-create.py $1 $2 $3
 if [ "$?" != 0 ]
 then
          dplyd-orchst-delete $1 -f
          exit
 fi
-cp       "/dplyd/$1/profile"  "/home/$1/.profile"
-chmod    0600                 "/home/$1/.profile"
-chown    -R $1:$1 "/home/$1"; restorecon -r "/home/$1"
-loginctl enable-linger  "$1"
+dplyd-orchst-prjct-prfl-prprgt "$1"
+loginctl enable-linger         "$1"

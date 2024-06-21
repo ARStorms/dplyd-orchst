@@ -11,19 +11,16 @@ then
 fi
 if [ "$2" == "" ]
 then
-        python3 /sbin/dplyd-orchst-cnfgrStore.py "$1"
+        python3 /sbin/dplyd-orchst-prjct-store-cnfg.py "$1"
         if [ "$?" != 0 ]
         then
                 exit
         fi
 else
-        python3 /sbin/dplyd-orchst-cnfgrStore.py "$1" "$2"
+        python3 /sbin/dplyd-orchst-prjct-store-cnfg.py "$1" "$2"
         if [ "$?" != 0 ]
         then
                 exit
         fi
 fi
-cp         -f "/dplyd/$1/profile" "/home/$1/.profile"
-chmod      0600                   "/home/$1/.profile"
-chown      -R $1:$1 "/home/$1"
-restorecon -r       "/home/$1"
+dplyd-orchst-prjct-prfl-prprgt  "$1"

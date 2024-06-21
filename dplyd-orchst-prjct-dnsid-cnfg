@@ -1,0 +1,7 @@
+#!/bin/sh
+python3   /sbin/dplyd-orchst-prjct-dnsid-cnfg.py "$1" "$2" "$3"
+if [ "$?" != 0 ]
+then
+         exit
+fi
+dplyd-orchst-prjct-prfl-prprgt "$1"

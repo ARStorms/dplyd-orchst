@@ -1,0 +1,14 @@
+#!/bin/sh
+if [ "$1" == "" ]
+then
+	echo "Project ID not provided"
+	exit
+fi
+if ! id -u $1 > /dev/null
+then
+	echo "Project does not exist"
+	exit
+fi
+cp      -f   "/etc/dplyd/$1/profile" "/home/$1/.profile"
+chmod   0600 "/home/$1/.profile"
+chown   -R   $1:$1 "/home/$1";  restorecon -r "/home/$1"

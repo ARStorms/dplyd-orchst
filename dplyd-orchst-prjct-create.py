@@ -26,13 +26,13 @@ else:
         try:
                 size = int (sys.argv [2])
         except  ValueError:
-                print ("Project attribute invalia: Size")
+                print ("Project attribute invalid: Size")
                 sys.exit (1)
         if size < 1 or size > 524288:
-                print ("Project attribute invalib: Size")
+                print ("Project attribute invalid: Size")
                 sys.exit (1)
         if math.log (size, 2).is_integer () == False:
-                print ("Project attribute invalic: Size")
+                print ("Project attribute invalid: Size")
                 sys.exit (1)
 if  len (sys.argv) < 4:
         print ("Project attribute not provided: Allocated Incoming TCP Port Block")
@@ -52,18 +52,18 @@ rootPrjctDrctryName = name
 unitCorePower = 0
 hostSize = 0
 try:
-        hostSize = open ("/dplyd/profile")
+        hostSize = open ("/etc/dplyd/profile")
         hostSize = json.load (hostSize)
-        unitCorePower = int (hostSize ["unitCorePower"])
+        unitCorePower = int  (hostSize ["unitCorePower"])
         hostSize = int (hostSize ["machinePower" ])
 except  Exception as e:
         print ("Could not retrieve Host size: ({0})".format (e))
         sys.exit (1)
 if unitCorePower < 1 or math.log (unitCorePower, 2).is_integer () == False:
-        print ("Host size is invalia"); print (unitCorePower)
+        print ("Host size is invalid"); print (unitCorePower)
         sys.exit (1)
 if hostSize < 1 or math.log (hostSize, 2).is_integer () == False:
-        print ("Host size is invalib"); print (hostSize)
+        print ("Host size is invalid"); print (hostSize)
         sys.exit (1)
 if unitCorePower > hostSize:
         print ("Unit core power can not be greater than machine power")
@@ -74,12 +74,12 @@ while _ba00 > 0:
         hostPrcsrs.append (unitCorePower)
         _ba00 = _ba00 - unitCorePower
 ######## 03: Determining usage of each processor
-_ba01 = os.listdir ("/dplyd")
+_ba01 = os.listdir ("/etc/dplyd")
 exstngAlctdIncmngTcpPortBlock = []
 for drctry in _ba01:
         if drctry == "profile" or drctry == rootPrjctDrctryName: continue
         try:
-                _ca01 = open ("/dplyd/{0}/profile".format (drctry))
+                _ca01 = open ("/etc/dplyd/{0}/profile".format (drctry))
                 _ca01 = json.load (_ca01)
                 _cb01 = int (_ca01 ["size"] )
                 _cb02 = _ca01 ["alctdPrcsrs"]
@@ -96,10 +96,10 @@ for drctry in _ba01:
                 print ("Could not determine usage of each processor: ({0}:{1})".format (drctry, e))
                 sys.exit (1)
 ######## 04: Selecting processors for projet
-_bb01 =  size
+_bb01 = size
 if _bb01 < unitCorePower: _bb01 = unitCorePower
-_bb01 = int (_bb01 / unitCorePower)
-_bb05 = _bb01
+_bb01 =  int (_bb01 / unitCorePower)
+_bb05 =_bb01
 _bb10 = size
 if _bb10 > unitCorePower: _bb10 = unitCorePower
 _bb50 = []
@@ -126,6 +126,6 @@ profile = {
         "alctdIncmngTcpPortBlock": alctdIncmngTcpPortBlock,
         "unitCorePower": unitCorePower
 }
-_bc01 = open ("/dplyd/{0}/profile".format (rootPrjctDrctryName), "w")
+_bc01 = open ("/etc/dplyd/{0}/profile".format (rootPrjctDrctryName), "w")
 json.dump (profile, _bc01, indent=8)
 _bc01.write  ("\n")

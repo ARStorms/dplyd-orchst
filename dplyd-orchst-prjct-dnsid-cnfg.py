@@ -21,10 +21,10 @@ if sys.argv [3] != "" and re.match (r'^(([a-z0-9\-]+\.)*[a-z0-9\-]+\:)+$', sys.a
         print ("DNS ID is  invalid" )
         sys.exit (1)
 ###########
-_bc01 = open  ("/dplyd/{0}/profile".format (sys.argv [1]), "r")
+_bc01 = open  ("/etc/dplyd/{0}/profile".format (sys.argv [1]), "r")
 _bd01 = json.loads (_bc01.read ( ) )
 _bd01 ["sltnPrjctId"] = sys.argv [2]
 _bd01 ["dnsId"] = sys.argv [3].split (":")
 if _bd01 ["dnsId"] [0] == "": _bd01 ["dnsId"] = []
-_be01 = open  ("/dplyd/{0}/profile".format (sys.argv [1]), "w")
+_be01 = open  ("/etc/dplyd/{0}/profile".format (sys.argv [1]), "w")
 json.dump (_bd01, _be01, indent=8); _be01.write ("\n")
