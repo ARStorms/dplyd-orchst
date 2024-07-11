@@ -7,7 +7,7 @@ if len (sys.argv) < 2:
         print ("Project ID not provided")
         sys.exit (1)
 if sys.argv [1] == "":
-        print ("Project ID is  invalid" )
+        print ("Project ID not valid"   )
         sys.exit (1)
 #########
 intrfc = '''server {{
