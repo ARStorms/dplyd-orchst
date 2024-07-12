@@ -1,39 +1,17 @@
 #!/bin/sh
-if [ "$1" == "" ]
-then
-	echo "Project ID not provided"
-	exit
-fi
-if getent passwd "$1" > /dev/null
-then
-        echo "Project exist"
-        exit
-fi
-if [ "$2" == "" ]
-then
-	echo "Project size not provided"
-	exit
-fi
-if [ "$3" == "" ]
-then
-	echo "Project 'port block to assign' not specified"
-	exit
-fi
-useradd  "$1"
-mkdir    "/home/$1/.ssh"
-cp       "/root/.ssh/authorized_keys"       "/home/$1/.ssh/"
-chmod    -R 0700                            "/home/$1/.ssh"
-touch    "/home/$1/.prmtr"  ; chmod 0600    "/home/$1/.prmtr"
-mkdir    "/home/$1/.plate"  ; chmod 0700    "/home/$1/.plate"
-mkdir    "/home/$1/.store"  ; chmod 0700    "/home/$1/.store"
-chown    -R $1:$1 "/home/$1"; restorecon -r "/home/$1"
-mkdir    "/etc/dplyd/$1"
-touch    "/etc/dplyd/$1/profile"
-python3  /sbin/dplyd-orchst-create.py $1 $2 $3
+yield=$(python3 /sbin/dplyd-orchst-prjct-create.py "$1")
 if [ "$?" != 0 ]
 then
-         dplyd-orchst-delete $1 -f
+         echo $yield
          exit
 fi
-dplyd-orchst-prjct-prfl-prprgt "$1"
-loginctl enable-linger         "$1"
+useradd  "$yield"
+mkdir    "/home/$yield/.ssh"
+cp       "/root/.ssh/authorized_keys" "/home/$yield/.ssh/"
+chmod    -R 0700                      "/home/$yield/.ssh"
+touch    "/home/$yield/.prmtr"; chmod 0600 "/home/$yield/.prmtr"
+mkdir    "/home/$yield/.plate"; chmod 0700 "/home/$yield/.plate"
+mkdir    "/home/$yield/.store"; chmod 0700 "/home/$yield/.store"
+chown    -R $yield:$yield "/home/$yield"; restorecon -r "/home/$yield"
+dplyd-orchst-prjct-prfl-prprgt  "$yield"
+loginctl enable-linger          "$yield"

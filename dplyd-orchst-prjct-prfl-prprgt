@@ -9,6 +9,6 @@ then
 	echo "Project does not exist"
 	exit
 fi
-cp      -f   "/etc/dplyd/$1/profile" "/home/$1/.profile"
+cp      -f   "/etc/dplyd/$1" "/home/$1/.profile" # <<<<
 chmod   0600 "/home/$1/.profile"
-chown   -R   $1:$1 "/home/$1";  restorecon -r "/home/$1"
+chown   -R   $1:$1 "/home/$1"; restorecon -r "/home/$1"
