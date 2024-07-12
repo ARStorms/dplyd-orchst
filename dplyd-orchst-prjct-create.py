@@ -1,131 +1,111 @@
-import  json
-import  math
-import  os
-import  sys
-######## 01: Validate input
-ID = 0; size=0; alctdIncmngTcpPortBlock = 0
-if  len (sys.argv) < 2:
-        print ("Project attribute not provided: ID")
-        sys.exit (1)
-else:
-        try:
-                ID = sys.argv [1].replace ("prjct", "")
-                ID = ID.replace ("-0", "")
-                ID = ID.replace ( "-", "")
-                ID = int (ID)
-        except  ValueError:
-                print ("Project attribute invalid: ID")
-                sys.exit  (1)
-        if ID < 1 or ID > 32:
-                print ("Project attribute invalid: ID")
-                sys.exit  (1)
-if  len (sys.argv) < 3:
-        print ("Project attribute not provided: Size")
-        sys.exit (1)
-else:
-        try:
-                size = int (sys.argv [2])
-        except  ValueError:
-                print ("Project attribute invalid: Size")
-                sys.exit (1)
-        if size < 1 or size > 524288:
-                print ("Project attribute invalid: Size")
-                sys.exit (1)
-        if math.log (size, 2).is_integer () == False:
-                print ("Project attribute invalid: Size")
-                sys.exit (1)
-if  len (sys.argv) < 4:
-        print ("Project attribute not provided: Allocated Incoming TCP Port Block")
-        sys.exit (1)
-else:
-        try:
-                alctdIncmngTcpPortBlock = int (sys.argv [3])
-        except  ValueError:
-                print ("Project attribute invalid: Allocated Incoming TCP Port Block")
-                sys.exit (1)
-        if alctdIncmngTcpPortBlock < 1 or alctdIncmngTcpPortBlock > 99:
-                print ("Project attribute invalid: Allocated Incoming TCP Port Block")
-                sys.exit (1)
-name = sys.argv [1]
-rootPrjctDrctryName = name
-######## 02: Fetch host profile
-unitCorePower = 0
-hostSize = 0
-try:
-        hostSize = open ("/etc/dplyd/profile")
-        hostSize = json.load (hostSize)
-        unitCorePower = int  (hostSize ["unitCorePower"])
-        hostSize = int (hostSize ["machinePower" ])
+import dplyd_lib
+import json
+import math
+import re
+import sys
+################################################################################################
+#1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234#
+################################################################################################
+#### 1 ####: Validate input
+if len (sys.argv) < 2: print ("Project size not provided"); sys.exit (1)
+prjctSize = 0
+try:####
+        prjctSize = int (sys.argv [1])
 except  Exception as e:
-        print ("Could not retrieve Host size: ({0})".format (e))
+        print ("Project size invalid")
         sys.exit (1)
-if unitCorePower < 1 or math.log (unitCorePower, 2).is_integer () == False:
-        print ("Host size is invalid"); print (unitCorePower)
+####
+#### 2 ####: Load server profile
+serverPrfl = dplyd_lib.ServerPrfl__load ()
+#### 3 ####: Fetch list of products and respective sizes
+prjctList  = dplyd_lib.PrdctList__fetch ()
+#### 4 ####: Check if space is available
+prcsrUsage = [0 for _ in range (int (serverPrfl ["coreCount"]))]
+for prjct in prjctList:
+        _ce05 = dplyd_lib.PrdctPrfl__load (prjct [0])
+        for acsblPrcsr in _ce05 ["acsblPrcsrs"]:
+                _de05 = acsblPrcsr.split (":")
+                _de11 = int (_de05 [0])
+                _de12 = int (_de05 [1])
+                prcsrUsage [_de11] = prcsrUsage [_de11] + _de12
+        ####
+####
+cpctyLeftForDstrbt = prjctSize
+acsblPrcsrs = []
+for _ce05 , _ce10 in enumerate (reversed (prcsrUsage)):
+        #### 1 ####
+        if cpctyLeftForDstrbt <= 0: break
+        _ce05 = abs (_ce05 - (len (prcsrUsage) - 1))
+        _cf05 = int (serverPrfl ["unitCorePower"]) - _ce10
+        if _cf05 == 0: continue
+        #### 2 ####
+        nextCpctyToRsrv = cpctyLeftForDstrbt
+        if nextCpctyToRsrv > int (serverPrfl ["unitCorePower"]):
+                nextCpctyToRsrv = int (serverPrfl ["unitCorePower"])
+        ##
+        if _cf05 < nextCpctyToRsrv: continue
+        #### 3 ####
+        acsblPrcsrs.append ("{0}:{1}".format(_ce05, nextCpctyToRsrv))
+        cpctyLeftForDstrbt = cpctyLeftForDstrbt - nextCpctyToRsrv
+####
+_be05 = float (prjctSize)  / float (serverPrfl ["unitCorePower"])
+_bf05 = math.ceil (_be05)
+if len(acsblPrcsrs) < _bf05:
+        print ("Server available capacity not enough to power project")
         sys.exit (1)
-if hostSize < 1 or math.log (hostSize, 2).is_integer () == False:
-        print ("Host size is invalid"); print (hostSize)
-        sys.exit (1)
-if unitCorePower > hostSize:
-        print ("Unit core power can not be greater than machine power")
-        sys.exit (1)
-hostPrcsrs = []
-_ba00 = hostSize
-while _ba00 > 0:
-        hostPrcsrs.append (unitCorePower)
-        _ba00 = _ba00 - unitCorePower
-######## 03: Determining usage of each processor
-_ba01 = os.listdir ("/etc/dplyd")
-exstngAlctdIncmngTcpPortBlock = []
-for drctry in _ba01:
-        if drctry == "profile" or drctry == rootPrjctDrctryName: continue
-        try:
-                _ca01 = open ("/etc/dplyd/{0}/profile".format (drctry))
-                _ca01 = json.load (_ca01)
-                _cb01 = int (_ca01 ["size"] )
-                _cb02 = _ca01 ["alctdPrcsrs"]
-                _cb03 = int (_ca01 ["alctdIncmngTcpPortBlock"])
-                if  _cb01 <  1 or math.log (_cb01, 2).is_integer () == False:
-                        print ("Existing project attribute invalid: {0}".format (drctry))
-                        sys.exit (1)
-                if  _cb01 > unitCorePower: _cb01 = unitCorePower
-                for prcsr in _cb02:
-                        _da01 = int(prcsr)
-                        hostPrcsrs [_da01] = hostPrcsrs [_da01] - _cb01
-                exstngAlctdIncmngTcpPortBlock.append (_cb03)
-        except Exception as e:
-                print ("Could not determine usage of each processor: ({0}:{1})".format (drctry, e))
+##
+#### 5 ####: Create project
+#--- 1 ---#
+lastPrjctId = 0
+if len (prjctList) > 0:
+        _ce05 = prjctList [len (prjctList) - 1 ]
+        _ce05 = _ce05 [0].replace ("prjct-", "")
+        if re.match (r'^[0-9a-f]{2,2}$' , _ce05) == None:
+                print ("Project '{0}' with invalid id found".format (_ce05 [0]))
                 sys.exit (1)
-######## 04: Selecting processors for projet
-_bb01 = size
-if _bb01 < unitCorePower: _bb01 = unitCorePower
-_bb01 =  int (_bb01 / unitCorePower)
-_bb05 =_bb01
-_bb10 = size
-if _bb10 > unitCorePower: _bb10 = unitCorePower
-_bb50 = []
-_bb75 = hostPrcsrs
-_bb75.reverse (  )
-for i , prcsr in enumerate (_bb75):
-        i = (len(hostPrcsrs)-1) - i
-        if _bb05 > 0:
-                if _bb10 <= prcsr:
-                        _bb05 =_bb05- 1
-                        _bb50.append (i)
-if len (_bb50)< _bb01:
-        print ("Project too big for available capacity")
-        sys.exit (1)
-######## 05: Checking if 'Allocated Incoming TCP Port Block' is not already in use
-for block in exstngAlctdIncmngTcpPortBlock:
-        if block == alctdIncmngTcpPortBlock:
-                print ("Project attribute already in use: Assigned TCP Incoming Traffic Port Block")
-                sys.exit (1)
-######## 06: Printing project's profile
-profile = {
-        "size": size,
-        "alctdPrcsrs": _bb50,
-        "alctdIncmngTcpPortBlock": alctdIncmngTcpPortBlock,
-        "unitCorePower": unitCorePower
-}
-_bc01 = open ("/etc/dplyd/{0}/profile".format (rootPrjctDrctryName), "w")
-json.dump (profile, _bc01, indent=8)
-_bc01.write  ("\n")
+        ##
+        _ce10 = re.sub (r'^0', "", _ce05)
+        _ce15 = int ( _ce10, 16)
+        lastPrjctId = _ce15
+##
+try:
+        _ce05 = int (serverPrfl ["lastPrjctId"])
+        if _ce05 > lastPrjctId: lastPrjctId = _ce05
+except  Exception as e:
+        pass
+##
+newPrjctId = lastPrjctId +  1
+newPrjctId = hex (newPrjctId)
+newPrjctId = re.sub (r'^0x', "", newPrjctId)
+if len (newPrjctId) < 2: newPrjctId = "0{0}".format (newPrjctId)
+newPrjctId = "prjct-{0}".format (newPrjctId)
+#--- 2 ---#
+acsblPrcsrs.reverse ()
+#--- 3 ---#
+ntwrkPortBlock = 0
+for prjct in prjctList:
+        _ce05  = int (prjct [1])
+        ntwrkPortBlock = ntwrkPortBlock + _ce05
+####
+ntwrkPortBlock = ntwrkPortBlock + 1
+#--- 4 ---#
+serverPrfl ["lastPrjctId"] = lastPrjctId + 1
+_bh05 = json.dumps (serverPrfl  , indent=8 )
+_bh05 = _bh05 + "\n"
+newPrjctPrfl = """{{
+        "size": {0},
+        "acsblPrcsrs": {1},
+        "altdPortBlock": {2},
+        "system": {{
+                "unitCorePower": {3},
+                "coreCount": {4}
+        }}
+}}
+""".format (
+        prjctSize, acsblPrcsrs, ntwrkPortBlock, int (serverPrfl ["unitCorePower"]),
+        int (serverPrfl ["coreCount"])
+)
+newPrjctPrfl = newPrjctPrfl.replace ("'", '"')
+open  ("/etc/dplyd/dplyd"                  , "w").write (_bh05)
+open  ("/etc/dplyd/{0}".format (newPrjctId), "w").write (newPrjctPrfl)
+print (newPrjctId)
