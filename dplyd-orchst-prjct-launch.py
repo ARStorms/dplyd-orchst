@@ -1,6 +1,7 @@
 import  getpass
 import  json
 import  os
+import  re
 import  sys
 #### 01 ####
 def fetchPlates (path):
@@ -30,7 +31,10 @@ try:
         #### 02 ####
         _bd11 = int (_bb01 ["size"]) / int (_bb01 ["system"]["unitCorePower"] )
         _bd12 = ""
-        for cpu in   _bb01 ["acsblPrcsrs"]: _bd12 = _bd12 + ",{0}".format (cpu)
+        for cpu in   _bb01 ["acsblPrcsrs"]:
+                cpu = re.sub (r'\:[0-9]*$',"", cpu)
+                _bd12 = _bd12 + ",{0}".format (cpu)
+        #####
         _bd12 = _bd12 [1:]
         _bd13 = int ((_bb01 ["size"] * 1) * 0.75 * 1024)
         _bd14 = int ((_bb01 ["size"] * 1) * 0.75 * 1024)
@@ -57,18 +61,20 @@ try:
                 _cd30 = ((_cd10 - 1) * 4) + 2000 + 4
                 if   int ( port) ==   80: _ca01 = "-p {0}:80   \\\n".format (_cd15)
                 elif int ( port) == 1080: _ca01 = "-p {0}:1080 \\\n".format (_cd20)
-                elif int ( port) ==  443: _ca01 = "-p {0}:443  \\\n".format (_cd15)
+                elif int ( port) ==  443: _ca01 = "-p {0}:443  \\\n".format (_cd25)
                 elif int ( port) == 1443: _ca01 = "-p {0}:1443 \\\n".format (_cd30)
                 elif int ( port) >= 10001 and int (port) <= 35000:
                           _ca01 = "-p {0}:{1} \\\n".format (port, port)
                 ####
-                _bd18 = "{0}{1} ".format (_bd18, _ca01)
+                _bd18 = "{0}{1} ".format(_bd18, _ca01)
         #####
         _bd19 = int (_bb01 ["altdPortBlock"])
-        _bd20 =(_bd19 + int (_bb01 ["size"])) -1
+        _bd20 =(_bd19 -1)+ int (_bb01 ["size"])
+        _bd19 = _bd19 + 35000
+        _bd20 = _bd20 + 35000
         _bd25 = "{0} {1}".format (_bd19, _bd20)
         #### 03 ####
-        _be01 = startCode.format (_bd11, _bd12, _bd13, _bd14, _bd16, _bd17, _bd18, _bd19)
+        _be01 = startCode.format (_bd11, _bd12, _bd13, _bd14, _bd16, _bd17, _bd18, _bd25)
         _bf00 = getpass.getuser ().replace ("prjct-", "")
         _bf01 = open (
                 "/home/{0}/.local/bin/dplyd-orchst-prjct-launchCode".format (getpass.getuser()),

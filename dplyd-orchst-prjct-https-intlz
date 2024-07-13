@@ -10,5 +10,5 @@ then
 	exit
 fi
 systemctl stop  nginx
-python3   /sbin/dplyd-orchst-intlzHttps.py "$1"
+python3   /sbin/dplyd-orchst-prjct-https-intlz.py "$1"
 systemctl start nginx

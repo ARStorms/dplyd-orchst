@@ -6,8 +6,9 @@ podman unshare chown -R '0:0' .store
 python3  /sbin/dplyd-orchst-prjct-launch.py
 if [ "$?" != 0 ]
 then
-         exit
+        dplyd-orchst-prjct-shtdwn
+        exit
 fi
-chmod    0700  $HOME/.local/bin/*
+chmod   0700  $HOME/.local/bin/*
 "$HOME/.local/bin/dplyd-orchst-prjct-launchCode"
 echo "* * * * * /sbin/dplyd-orchst-prjct-manage" | crontab; crontab -l

@@ -2,9 +2,9 @@
 yield=$(python3 /sbin/dplyd-orchst-prjct-create.py "$1")
 if [ "$?" != 0 ]
 then
-         echo $yield
          exit
 fi
+echo $yield
 useradd  "$yield"
 mkdir    "/home/$yield/.ssh"
 cp       "/root/.ssh/authorized_keys" "/home/$yield/.ssh/"
@@ -15,3 +15,4 @@ mkdir    "/home/$yield/.store"; chmod 0700 "/home/$yield/.store"
 chown    -R $yield:$yield "/home/$yield"; restorecon -r "/home/$yield"
 dplyd-orchst-prjct-prfl-prprgt  "$yield"
 loginctl enable-linger          "$yield"
+

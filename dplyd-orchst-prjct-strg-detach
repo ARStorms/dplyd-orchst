@@ -10,9 +10,11 @@ then
 	exit
 fi
 umount -l  "/home/$1"
-umount -f  "/home/$1"
+if [ "$?" != 0 ]
+then
+        umount -f "/home/$1"
+fi
 loginctl disable-linger "$1"
-rm     -rf "/home/$1"
 sed    -i  "/\/home\/$1/d" '/etc/fstab'
 systemctl daemon-reload
 mount  -a

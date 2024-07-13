@@ -1,0 +1,2 @@
+#!/bin/sh
+python3 /sbin/dplyd-orchst-prjct-list.py
