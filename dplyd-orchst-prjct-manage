@@ -2,5 +2,5 @@
 pulse=$(podman ps | grep software)
 if [ "$pulse" == "" ]
 then
-        /sbin/dplyd-orchst-launch
+        /sbin/dplyd-orchst-prjct-launch
 fi

@@ -3,11 +3,11 @@ mkdir    -p    $HOME/.local/bin
 podman unshare chown -R '0:0' .prmtr
 podman unshare chown -R '0:0' .plate
 podman unshare chown -R '0:0' .store
-python3  /sbin/dplyd-poi-launch.py
+python3  /sbin/dplyd-orchst-prjct-launch.py
 if [ "$?" != 0 ]
 then
          exit
 fi
 chmod    0700  $HOME/.local/bin/*
-"$HOME/.local/bin/dplyd-ochstr-launchCode"
-echo "* * * * * /sbin/dplyd-orchstr-manage" | crontab; crontab -l
+"$HOME/.local/bin/dplyd-orchst-prjct-launchCode"
+echo "* * * * * /sbin/dplyd-orchst-prjct-manage" | crontab; crontab -l

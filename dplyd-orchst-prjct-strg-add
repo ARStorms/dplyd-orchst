@@ -30,7 +30,7 @@ then
 	exit
 fi
 rm         -rf "/home/$1"
-mkdir      "/home/$1"
+mkdir          "/home/$1"
 dd         if=/dev/zero of="$2" bs=1G status=none > /dev/null 2> /dev/null
 mkfs.ext4  -q "$2"
 uuid=$(blkid | grep "$2" | sed -r 's/\/dev.+ UUID="|" .+$//gI')

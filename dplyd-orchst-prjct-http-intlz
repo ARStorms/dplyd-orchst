@@ -1,8 +1,0 @@
-#!/bin/sh
-systemctl stop  nginx
-python3 /sbin/dplyd-orchst-prjct-http-intlz.py "$1"
-if [ "$?" != 0 ]
-then
-         exit
-fi
-systemctl start nginx

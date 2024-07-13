@@ -14,7 +14,7 @@ then
 	echo "Port nos not provided"
 	exit
 fi
-python3  /sbin/dplyd-orchst-prjct-ports-cnfg.py "$1" "$2"
+python3 /sbin/dplyd-orchst-prjct-ports-cnfg.py "$1" "$2"
 if [ "$?" !=  0 ]
 then
         exit

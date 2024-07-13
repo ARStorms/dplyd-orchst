@@ -2,7 +2,7 @@ import  getpass
 import  json
 import  os
 import  sys
-#########
+#### 01 ####
 def fetchPlates (path):
         _ba01 = []
         for root, dirs, files in os.walk(path): ##
@@ -17,74 +17,65 @@ podman unshare chown -R $cuser:$cuser .prmtr
 podman unshare chown -R $cuser:$cuser .plate
 podman unshare chown -R $cuser:$cuser .store
 podman run --name software -it \\
---cpuset-cpus {1} --cpus {0} --memory-swap {2}k --memory {3}k --shm-size {4}k --env-file $HOME/.prmtr {5} -v $HOME/.store:{6}:z \\
- {7} \
---sysctl net.ipv4.ip_local_port_range="{8}" \
+--cpuset-cpus {1} --cpus {0} --memory-swap {2}k --memory {3}k --env-file $HOME/.prmtr {4} -v $HOME/.store:{5}:z \\
+ {6} \
+--sysctl net.ipv4.ip_local_port_range="{7}" \
 software:latest
 """
-#########
+#### 02 ####
 try:
-        #####
+        #### 01 ####
         _ba01 = open(".profile","r")
         _bb01 = json.load (_ba01)
-        
-        #####
-        _bd11 = int (_bb01 ["size"]) / int (_bb01 ["unitCorePower"])
+        #### 02 ####
+        _bd11 = int (_bb01 ["size"]) / int (_bb01 ["system"]["unitCorePower"] )
         _bd12 = ""
-        for cpu in   _bb01 ["alctdPrcsrs"]: _bd12 = _bd12 + ",{0}".format (cpu)
+        for cpu in   _bb01 ["acsblPrcsrs"]: _bd12 = _bd12 + ",{0}".format (cpu)
         _bd12 = _bd12 [1:]
-        _bd13 = int ((_bb01 ["size"] * 2) * 0.75 * 1024)
-        _bd14 = int ((_bb01 ["size"] / 1) * 0.75 * 1024)
-        _bd15 = int ((_bb01 ["size"] / 2) * 0.75 * 1024)
+        _bd13 = int ((_bb01 ["size"] * 1) * 0.75 * 1024)
+        _bd14 = int ((_bb01 ["size"] * 1) * 0.75 * 1024)
         _bd16 = ""
         for plate in os.listdir (".plate"):
                 _ca00 = plate.replace ("=", "/")
                 if _ca00 == "": continue
                 _ca01 = '-v "$HOME/.plate/{0}:{1}:z" '.format (plate, _ca00)
                 _bd16 = _bd16 + _ca01
+        ####
         _bd17 = "/var/dplyd"
         if "storeMountPoint" in _bb01: _bd17 = _bb01 ["storeMountPoint"]
         if "activePort"  not in _bb01: _bb01 ["activePort"] = ""
         _bd18 = ""
         for port in _bb01 ["activePort"].split (":"):
-                if port == "": continue
+                if   port == "": continue
                 _ca01 = ""
-                _ca02 = ""
                 _cb01 = getpass.getuser ().replace ("prjct-", "")
-                _cc01 = port
-                if   len (_cc01) == 1 : _cc01 = "0" + _cc01
-                if   int ( port) >=80 and int (port) <= 90:
-                          _ca01   = "-p 1{0}{1}:{2}    \\\n".format (_cb01,_cc01,_cc01)
-                          _ca02   = "-p 3{0}{1}:100{2} \\\n".format (_cb01,_cc01,_cc01)
-                elif int ( port) >=43 and int (port) <= 53:
-                          _ca01   = "-p 1{0}{1}:4{2}   \\\n".format (_cb01,_cc01,_cc01)
-                          _ca02   = "-p 3{0}{1}:104{2} \\\n".format (_cb01,_cc01,_cc01)
-                elif int ( port) >= 1 and int (port) <= 10:
-                          _da01   = "-" + port
-                          _da01   = _da01.replace ("-0", ""  )
-                          _da01   = int (_da01.replace ( "-", ""))
-                          _da02   = int (_bb01 ["alctdIncmngTcpPortBlock"])
-                          _da03   = ((_da02 - 1) * 10) + _da01
-                          _da04   = 20000 + _da03
-                          _ca01   = "-p {0}:{1} \\\n".format (_da04, _da04)
-                else:
-                          pass
-                if _ca01 != "": _bd18 = "{0}{1} ".format (_bd18, _ca01)
-                if _ca02 != "": _bd18 = "{0}{1} ".format (_bd18, _ca02)
-        _bd19 = ""
-        _bd19_00 = getpass.getuser ().replace ("prjct", "")
-        _bd19_00 =_bd19_00.replace ("-0", "")
-        _bd19_00 =_bd19_00.replace ( "-", "")
-        _bd19_00 = int(_bd19_00    )
-        _bd19_01 = 30001
-        _bd19_02 = 30000 + int (_bb01["size"])
-        if _bd19_02 > 40000: _bd19_02 = 40000
-        _bd19 = "{0} {1}".format (_bd19_01, _bd19_02)
+                _cd05 = re.sub (r'^0', "", _cb01)
+                _cd10 = int  ( _cd05 ,16)
+                _cd15 = ((_cd10 - 1) * 4) + 2000 + 1
+                _cd20 = ((_cd10 - 1) * 4) + 2000 + 2
+                _cd25 = ((_cd10 - 1) * 4) + 2000 + 3
+                _cd30 = ((_cd10 - 1) * 4) + 2000 + 4
+                if   int ( port) ==   80: _ca01 = "-p {0}:80   \\\n".format (_cd15)
+                elif int ( port) == 1080: _ca01 = "-p {0}:1080 \\\n".format (_cd20)
+                elif int ( port) ==  443: _ca01 = "-p {0}:443  \\\n".format (_cd15)
+                elif int ( port) == 1443: _ca01 = "-p {0}:1443 \\\n".format (_cd30)
+                elif int ( port) >= 10001 and int (port) <= 35000:
+                          _ca01 = "-p {0}:{1} \\\n".format (port, port)
+                ####
+                _bd18 = "{0}{1} ".format (_bd18, _ca01)
         #####
-        _be01 = startCode.format (_bd11, _bd12, _bd13, _bd14, _bd15, _bd16, _bd17, _bd18, _bd19)
-        _bf01 = open (".local/bin/dplyd-orchst-launchCode", "w")
+        _bd19 = int (_bb01 ["altdPortBlock"])
+        _bd20 =(_bd19 + int (_bb01 ["size"])) -1
+        _bd25 = "{0} {1}".format (_bd19, _bd20)
+        #### 03 ####
+        _be01 = startCode.format (_bd11, _bd12, _bd13, _bd14, _bd16, _bd17, _bd18, _bd19)
+        _bf00 = getpass.getuser ().replace ("prjct-", "")
+        _bf01 = open (
+                "/home/{0}/.local/bin/dplyd-orchst-prjct-launchCode".format (getpass.getuser()),
+                "w"
+        )
         _bf01.write  (_be01)
         print (_be01 )
 except  Exception as e:
-        print ("Failed: {0}".format (e))  
+        print ("Launch failed: {0}".format (e))  
         sys.exit (1)

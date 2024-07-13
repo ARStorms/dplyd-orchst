@@ -23,4 +23,4 @@ else
                 exit
         fi
 fi
-dplyd-orchst-prjct-prfl-prprgt  "$1"
+dplyd-orchst-prjct-prfl-prprgt "$1"
