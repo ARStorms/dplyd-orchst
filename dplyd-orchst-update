@@ -1,10 +1,10 @@
 #!/bin/sh
-rm -rf 2.latest.zip
-rm -rf dplyd-orchst-2.latest
-wget  "https://github.com/ARStorms/dplyd-orchst/archive/refs/tags/2.latest.zip"
-unzip  2.latest.zip
-cd     dplyd-orchst-2.latest
+rm -rf  v2.latest.zip
+rm -rf  dplyd-orchst-v2.latest
+wget   "https://github.com/ARStorms/dplyd-orchst/archive/refs/tags/v2.latest.zip"
+unzip   v2.latest.zip
+cd      dplyd-orchst-v2.latest
 ./dplyd-orchst-instl
-cd     ..
-rm -rf 2.latest.zip
-rm -rf dplyd-orchst-2.latest
+cd      ..
+rm -rf  v2.latest.zip
+rm -rf  dplyd-orchst-v2.latest
