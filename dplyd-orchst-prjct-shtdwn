@@ -1,5 +1,5 @@
 #!/bin/sh
-podman stop software
+podman stop --all --time 300
 pulse=$(podman   ps    | grep software)
 while [ "$pulse" != "" ]
 do
