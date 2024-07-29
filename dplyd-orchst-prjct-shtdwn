@@ -1,12 +1,18 @@
 #!/bin/sh
 podman stop software
-pulse=$(podman ps | grep software)
+pulse=$(podman   ps    | grep software)
 while [ "$pulse" != "" ]
 do
         sleep 1
 done
-podman rm   software
-pulse=$(podman images | grep software)
+podman container rm -a
+pulse=$(podman   ps -a | grep software)
+while [ "$pulse" != "" ]
+do
+        sleep 1
+done
+podman image     rm -a
+pulse=$(podman images  | grep software)
 while [ "$pulse" != "" ]
 do
         sleep 1
