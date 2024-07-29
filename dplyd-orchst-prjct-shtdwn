@@ -21,3 +21,4 @@ podman unshare chown -R 0:0 .prmtr
 podman unshare chown -R 0:0 .plate
 podman unshare chown -R 0:0 .store
 crontab -r ; crontab -l
+echo "Shutdown complete"
