@@ -11,8 +11,7 @@ def fetchPlates (path):
                         _ba01.append (os.path.join (root, drctry))
         return _ba01
 startCode = """#!/bin/sh
-podman stop software
-podman rm   software
+dplyd-orchst-prjct-shtdwn
 podman pull {8}
 podman tag  {8} software:latest
 cuser=$(podman run --rm software id | sed -E 's/\(.+gid.+//' | sed 's/uid=//')

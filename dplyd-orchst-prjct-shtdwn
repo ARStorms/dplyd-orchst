@@ -1,6 +1,16 @@
 #!/bin/sh
 podman stop software
+pulse=$(podman ps | grep software)
+while [ "$pulse" != "" ]
+do
+        sleep 1
+done
 podman rm   software
+pulse=$(podman images | grep software)
+while [ "$pulse" != "" ]
+do
+        sleep 1
+done
 podman unshare chown -R 0:0 .prmtr
 podman unshare chown -R 0:0 .plate
 podman unshare chown -R 0:0 .store
