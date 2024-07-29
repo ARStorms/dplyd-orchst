@@ -5,7 +5,7 @@ import sys
 ######## 01: Determine what value to work with
 _ba01 = ""
 if len (sys.argv) > 2:
-        if re.search (r'^[a-zA-Z\-\_\.0-9]+\/[a-zA-Z\-\_\.0-9]+(\/[a-zA-Z\-\_\.0-9]+)*$', sys.argv [2]):
+        if re.search (r'^[a-zA-Z\-\._:0-9]+\/[a-zA-Z\-\._:0-9]+(\/[a-zA-Z\-\._:0-9]+)*$', sys.argv [2]) == None:
                 print ("Software path is invalid")
                 sys.exit (1)
         _ba01 = sys.argv [2]
