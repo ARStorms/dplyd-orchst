@@ -1,0 +1,26 @@
+#!/bin/sh
+if [ "$1" == "" ]
+then
+	echo "Project ID not provided"
+	exit
+fi
+if ! id -u $1 > /dev/null
+then
+	echo "Project does not exist"
+	exit
+fi
+if [ "$2" == "" ]
+then
+        python3 /sbin/dplyd-orchst-prjct-store-cnfgr.py "$1"
+        if [ "$?" != 0 ]
+        then
+                exit
+        fi
+else
+        python3 /sbin/dplyd-orchst-prjct-store-cnfgr.py "$1" "$2"
+        if [ "$?" != 0 ]
+        then
+                exit
+        fi
+fi
+dplyd-orchst-prjct-prfl-prprgt "$1"
