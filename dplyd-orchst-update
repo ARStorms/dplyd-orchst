@@ -6,4 +6,5 @@ unzip  2.latest.zip
 cd     dplyd-orchst-2.latest
 ./dplyd-orchst-instl
 cd     ..
+rm -rf 2.latest.zip
 rm -rf dplyd-orchst-2.latest
