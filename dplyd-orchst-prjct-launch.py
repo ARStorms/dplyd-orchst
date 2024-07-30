@@ -12,14 +12,14 @@ def fetchPlates (path):
         return _ba01
 startCode = """#!/bin/sh
 dplyd-orchst-prjct-shtdwn
-podman pull {8}
-podman tag  {8} software:latest
+podman pull {8}:{9}
+podman tag  {8}:{9} software:latest
 cuser=$(podman run --rm software id | sed -E 's/\(.+gid.+//' | sed 's/uid=//')
 podman unshare chown -R $cuser:$cuser .prmtr
 podman unshare chown -R $cuser:$cuser .plate
 podman unshare chown -R $cuser:$cuser .store
 podman run --name software -it \\
---cpuset-cpus {1} --cpus {0} --memory-swap {2}k --memory {3}k {9} --env-file $HOME/.prmtr {4} -v $HOME/.store:{5}:z \\
+--cpuset-cpus {1} --cpus {0} --memory-swap {2}k --memory {3}k {10} --env-file $HOME/.prmtr {4} -v $HOME/.store:{5}:z \\
  {6} \
 --sysctl net.ipv4.ip_local_port_range="{7}" \
 software:latest
@@ -74,13 +74,14 @@ try:
         _bd19 = _bd19 + 35000
         _bd20 = _bd20 + 35000
         _bd25 = "{0} {1}".format (_bd19, _bd20)
-        _bd26 = _bb01 ["sftwr"]
+        _bd26 = _bb01 [ "sftwr"]
         _bd27 = ""
-        if "shmSize" in _bb01: _bd27 = _bb01 [ "shmSize"]
+        _bd28 = _bd26.split(":")
+        if "shmSize" in _bb01: _bd27 = _bb01 [ "shmSize" ]
         if _bd27 != "": _bd27= _bd27 = "--shm-size {0}b".format (_bd27)
         #### 03 ####
         _be01 = startCode.format (
-                _bd11, _bd12, _bd13, _bd14, _bd16, _bd17, _bd18, _bd25, _bd26, _bd27
+                _bd11 , _bd12, _bd13, _bd14, _bd16, _bd17,_bd18, _bd25,_bd28[0],_bd27,_bd28 [1],
         )
         _bf00 = getpass.getuser ().replace ("prjct-", "")
         _bf01 = open (
