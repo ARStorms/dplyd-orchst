@@ -12,8 +12,14 @@ def fetchPlates (path):
         return _ba01
 startCode = """#!/bin/sh
 dplyd-orchst-prjct-shtdwn
-podman pull {8}:{9}
-podman tag  {8}:{9} software:latest
+pulse=$(podman images | grep {8})
+if [ "$pulse" == "" ]
+then
+        podman container rm -a
+        podman image     rm -a
+        podman pull {8}:{9}
+fi
+podman tag {8}:{9} software:latest
 cuser=$(podman run --rm software id | sed -E 's/\(.+gid.+//' | sed 's/uid=//')
 podman unshare chown -R $cuser:$cuser .prmtr
 podman unshare chown -R $cuser:$cuser .plate
@@ -81,7 +87,7 @@ try:
         if _bd27 != "": _bd27= _bd27 = "--shm-size {0}b".format (_bd27)
         #### 03 ####
         _be01 = startCode.format (
-                _bd11 , _bd12, _bd13, _bd14, _bd16, _bd17,_bd18, _bd25,_bd28[0],_bd27,_bd28 [1],
+                _bd11 , _bd12, _bd13, _bd14, _bd16, _bd17,_bd18, _bd25,_bd28[0],_bd28 [1],_bd27,
         )
         _bf00 = getpass.getuser ().replace ("prjct-", "")
         _bf01 = open (
