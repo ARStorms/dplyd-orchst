@@ -11,7 +11,25 @@ def fetchPlates (path):
                         _ba01.append (os.path.join (root, drctry))
         return _ba01
 startCode = """#!/bin/sh
-dplyd-orchst-prjct-shtdwn
+#Prepare site for launch
+echo "Preparing site for launch..."
+podman stop --all --time 300
+pulse=$(podman   ps    | grep software)
+while [ "$pulse" != "" ]
+do
+        sleep 1
+done
+podman container rm -a
+pulse=$(podman   ps -a | grep software)
+while [ "$pulse" != "" ]
+do
+        sleep 1
+done
+podman unshare chown -R 0:0 .prmtr
+podman unshare chown -R 0:0 .plate
+podman unshare chown -R 0:0 .store
+#Launch
+echo "Launching..."
 pulse=$(podman images | grep {8})
 if [ "$pulse" == "" ]
 then
@@ -25,8 +43,8 @@ podman unshare chown -R $cuser:$cuser .prmtr
 podman unshare chown -R $cuser:$cuser .plate
 podman unshare chown -R $cuser:$cuser .store
 podman run --name software -it \\
---cpuset-cpus {1} --cpus {0} --memory-swap {2}k --memory {3}k {10} --env-file $HOME/.prmtr {4} -v $HOME/.store:{5}:z \\
- {6} \
+--cpuset-cpus {1} --cpus {0} --memory-swap {2}k --memory {3}k {10} --env-file $HOME/.prmtr {4} -v $HOME/.store:{5}:Z \\
+{6} \
 --sysctl net.ipv4.ip_local_port_range="{7}" \
 software:latest
 """
@@ -49,7 +67,7 @@ try:
         for plate in os.listdir (".plate"):
                 _ca00 = plate.replace ("=", "/")
                 if _ca00 == "": continue
-                _ca01 = '-v "$HOME/.plate/{0}:{1}:z" '.format (plate, _ca00)
+                _ca01 = '-v "$HOME/.plate/{0}:{1}:Z" '.format (plate, _ca00)
                 _bd16 = _bd16 + _ca01
         ####
         _bd17 = "/var/dplyd"
@@ -95,7 +113,7 @@ try:
                 "w"
         )
         _bf01.write  (_be01)
-        print (_be01 )
+#        print (_be01 )
 except  Exception as e:
         print ("Launch failed: {0}".format (e))  
         sys.exit (1)
