@@ -1,4 +1,5 @@
 #!/bin/sh
+dnf install  wget zip -y
 rm -rf  v2.latest.zip
 rm -rf  dplyd-orchst-2.latest
 wget   "https://github.com/ARStorms/dplyd-orchst/archive/refs/tags/v2.latest.zip"

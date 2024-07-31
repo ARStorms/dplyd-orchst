@@ -77,7 +77,7 @@ http   {
 EOF
 mkdir -p /etc/systemd/system/user@.service.d
 echo  "" | tee -a      /etc/systemd/system/user@.service.d/delegate.conf
-python3 ./dplyd-orchst-server-setup3-01.py
+python3  /sbin/dplyd-orchst-server-setup3-01.py
 sed   -i '/Delegate/d' /etc/systemd/system/user@.service.d/delegate.conf
 sed   -i '/^$/d'       /etc/systemd/system/user@.service.d/delegate.conf
 sed   -i 's/\[Service\]/\[Service\]\
