@@ -1,0 +1,7 @@
+#!/bin/sh
+sed  -i '/net.ipv4.ip_local_port_range/d' /etc/sysctl.conf
+sed  -i '/^$/d'                           /etc/sysctl.conf
+echo "net.ipv4.ip_local_port_range = 35001 65000" | tee -a /etc/sysctl.conf
+echo "System will reboot now to complete this op..."
+read -p "Press ENTER to continue" _Trash
+systemctl reboot
