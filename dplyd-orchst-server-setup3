@@ -92,6 +92,29 @@ leapsectz  right/UTC
 ntsdumpdir /var/lib/chrony
 logdir     /var/log/chrony
 EOF
+mkdir -p          /etc/dplyd #####
+mkdir -p          /etc/nginx/dplyd
+if  [  ! -f      "/etc/dplyd/dplyd" ]; then
+cat   << 'EOF' >  /etc/dplyd/dplyd
+{
+        "unitCorePower": 4096,
+        "coreCount": 4
+}
+EOF
+fi
+cat   << 'EOF' >  /root/.config/micro/settings.json
+{
+	"autoclose": false,
+        "basename": true,
+        "eofnewline": false,
+        "matchbrace": false,
+        "relativeruler": true,
+        "ruler": false,
+        "softwrap": true,
+        "tabsize": 8,
+        "tabstospaces": true
+}
+EOF
 #Starting up components
 systemctl enable  nginx
 systemctl enable  podman
