@@ -102,6 +102,7 @@ cat   << 'EOF' >  /etc/dplyd/dplyd
 }
 EOF
 fi
+chmod -R 0700 /etc/dplyd
 mkdir -p /root/.config/micro
 cat   << 'EOF' >  /root/.config/micro/settings.json
 {
