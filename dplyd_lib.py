@@ -12,7 +12,7 @@ def ServerPrfl__load ():
                 _ce05 = json.loads (_ce05)
                 serverPrfl = _ce05
         except  Exception as e:
-                print ("Server profile loading failed. [{0}]".format (e))
+                print ("Server profile loading failed [{0}]".format (e))
                 sys.exit (1)
         ####
         try:
@@ -25,7 +25,7 @@ def ServerPrfl__load ():
                         sys.exit (1)
                 ##
         except  Exception as e:
-                print ("Server profile validation failed. [{0}]".format (e))
+                print ("Server profile validation failed [{0}]".format (e))
                 sys.exit (1)
         ####
         return serverPrfl
@@ -37,14 +37,14 @@ def PrdctList__fetch ():
                 _ce05 = os.listdir ("/etc/dplyd")
                 prjctList = _ce05
         except  Exception as e:
-                print ("Project list loading failed. [{0}]".format (e))
+                print ("Project list loading failed [{0}]".format (e))
                 sys.exit (1)
         ####
         prjctList.sort ()
         for prjct  in prjctList:
                 if re.match (r'^prjct-[0-9a-f]{2,2}$', prjct) == None: continue
                 try:
-                        _de05 = open ("/etc/dplyd/{0}".format (prjct, "r") ).read ()
+                        _de05 = open ("/etc/dplyd/{0}".format (prjct , "r") ).read ()
                         _df05 = json.loads (_de05)
                         if re.match (r'^[1-9][0-9]*$', str (_df05 ["size"])) == None:
                                 print ("Project {0} has invalid size '{1}'".format (
@@ -54,7 +54,7 @@ def PrdctList__fetch ():
                         ####
                         prjctSize.append ([prjct, str (_df05 ["size"])])
                 except  Exception as e:
-                        print ("Project {0} profile could not be loaded. [{1}]".format (
+                        print ("Project {0} profile could not be loaded [{1}]".format (
                                 prjct, e
                         ))
                         sys.exit (1)
@@ -69,7 +69,7 @@ def PrdctPrfl__load (prdct):
                 _ce05 = json.loads (_ce05)
                 prdctPrfl = _ce05
         except  Exception as e:
-                print ("Product {0} profile loading failed. [{1}]".format (prdct, e))
+                print ("Product {0} profile loading failed [{1}]".format (prdct, e))
                 sys.exit (1)
         ####
         try:
@@ -86,7 +86,7 @@ def PrdctPrfl__load (prdct):
                         ##
                 ##
         except  Exception as e:
-                print ("Product {0} profile validation failed. [{1}]".format (prdct, e))
+                print ("Product {0} profile validation failed [{1}]".format (prdct, e))
                 sys.exit (1)
         ####
         return prdctPrfl
