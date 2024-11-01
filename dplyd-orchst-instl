@@ -1,7 +1,11 @@
 #!/bin/sh
 cp -rf ./dplyd* /sbin/
 chmod 0700 /sbin/dplyd*
+chmod 0755 /sbin/dplyd-orchst-prjct-sftwr-instl
+chmod 0755 /sbin/dplyd-orchst-prjct-sftwr-instl-01.py
 chmod 0755 /sbin/dplyd-orchst-prjct-launch
 chmod 0755 /sbin/dplyd-orchst-prjct-launch.py
+chmod 0755 /sbin/dplyd-orchst-prjct-launch_daemon-actvt
 chmod 0755 /sbin/dplyd-orchst-prjct-manage
+chmod 0755 /sbin/dplyd-orchst-prjct-launch_daemon-dctvt
 chmod 0755 /sbin/dplyd-orchst-prjct-shtdwn

@@ -1,0 +1,2 @@
+#!/bin/sh
+echo '* * * * * /sbin/dplyd-orchst-prjct-manage' | crontab

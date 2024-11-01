@@ -1,18 +1,12 @@
 #!/bin/sh
-echo '' | crontab ; crontab -r
-podman stop --all --time   300
-pulse=$(podman   ps    | grep software)
-while [ "$pulse" != "" ]
+podman stop --all --time 300
+pulse=$(podman ps | grep software)
+while [ "$pulse"  != "" ]
 do
-        sleep 1
+        sleep  1
 done
-podman container rm -a
-pulse=$(podman   ps -a | grep software)
-while [ "$pulse" != "" ]
-do
-        sleep 1
-done
+podman container  rm -a
+podman image      rm -a
 podman unshare chown -R 0:0 .prmtr
 podman unshare chown -R 0:0 .plate
 podman unshare chown -R 0:0 .store
-echo "Shutdown complete"

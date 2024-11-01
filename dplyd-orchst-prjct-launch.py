@@ -11,39 +11,32 @@ def fetchPlates (path):
                         _ba01.append (os.path.join (root, drctry))
         return _ba01
 startCode = """#!/bin/sh
-#Prepare site for launch
-echo "Preparing site for launch..."
-podman stop --all --time 300
-pulse=$(podman   ps    | grep software)
-while [ "$pulse" != "" ]
-do
-        sleep 1
-done
-podman container rm -a
-pulse=$(podman   ps -a | grep software)
-while [ "$pulse" != "" ]
-do
-        sleep 1
-done
-podman unshare chown -R 0:0 .prmtr
-podman unshare chown -R 0:0 .plate
-podman unshare chown -R 0:0 .store
-#Launch
-echo "Launching..."
-pulse=$(podman images | grep {8})
-if [ "$pulse" == "" ]
+# Launch 1/2
+echo  "Launching (1/2)..."
+dplyd-orchst-prjct-shtdwn
+
+
+
+
+# Launch 2/2
+echo  "Launching (2/2)..."
+podman image load < /home/prjct-01/.cntnr.tar
+cntnr=$(podman images --quiet)
+if [  "$cntnr" == "" ]
 then
-        podman container rm -a
-        podman image     rm -a
-        podman pull {8}:{9}
+        echo "No software installed"
+        exit 1
 fi
-podman tag {8}:{9} software:latest
+podman tag "$cntnr" software:latest
 cuser=$(podman run --rm software id | sed -E 's/\(.+gid.+//' | sed 's/uid=//')
 podman unshare chown -R $cuser:$cuser .prmtr
 podman unshare chown -R $cuser:$cuser .plate
 podman unshare chown -R $cuser:$cuser .store
-podman run --name software -it \\
---cpuset-cpus {1} --cpus {0} --memory-swap {2}k --memory {3}k {10} --env-file $HOME/.prmtr {4} -v $HOME/.store:{5}:Z \\
+podman run --name software -d \\
+--log-driver json-file --log-opt path=$HOME/.stdoe  --log-opt max-size=1gb \\
+--cpuset-cpus {1} --cpus {0} --memory-swap {2}k --memory {3}k {10} \\
+--env-file $HOME/.prmtr {4} \\
+-v $HOME/.store:{5}:Z \\
 {6} \
 --sysctl net.ipv4.ip_local_port_range="{7}" \
 software:latest
@@ -98,7 +91,7 @@ try:
         _bd19 = _bd19 + 35000
         _bd20 = _bd20 + 35000
         _bd25 = "{0} {1}".format (_bd19, _bd20)
-        _bd26 = _bb01 [ "sftwr"]
+        _bd26 = ":"
         _bd27 = ""
         _bd28 = _bd26.split(":")
         if "shmSize" in _bb01: _bd27 = _bb01 [ "shmSize" ]

@@ -1,0 +1,35 @@
+#!/bin/sh
+################################################################################################
+# 12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012 #
+################################################################################################
+dplyd-orchst-prjct-shtdwn
+podman  container rm -a
+podman  image     rm -a
+################################################################################################
+ExitMssg=$(python3 /sbin/dplyd-orchst-prjct-sftwr-instl-01.py "$1" "$2" "$3")
+ExitCode=$?
+if [ "$ExitCode" != 0 ]
+then
+        echo $ExitMssg
+        exit $ExitCode
+fi
+################################################################################################
+ExitMssg=$(cat ~/.RgstryUserPswrd | podman login "$1" --username "$2" --password-stdin)
+ExitCode=$?
+if [ "$ExitCode" != 0 ]
+then
+        echo $ExitMssg
+        exit $ExitCode
+fi
+ExitMssg=$(podman pull "$1/$3")
+ExitCode=$?
+if [ "$ExitCode" != 0 ]
+then
+        echo $ExitMssg
+        exit $ExitCode
+fi
+podman  logout "$1"
+################################################################################################
+rm -rf .cntnr.tar
+podman  image save "$1/$3" > .cntnr.tar
+podman  image rm    -a

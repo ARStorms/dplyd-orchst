@@ -1,0 +1,2 @@
+#!/bin/sh
+echo '' | crontab; crontab -r
